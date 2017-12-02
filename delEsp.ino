@@ -2,7 +2,7 @@
 #include "Protocol.h"
 #include "Provider.h"
 #include <map>
-#include <functional>  // for std::function
+#include <functional>  
 #include <utility>     // for std::forward and std::move
 #include <vector>
 #include <list>
