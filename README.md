@@ -1,45 +1,37 @@
-**Edit a file, create a new file, and clone from Bitbucket in under 2 minutes**
+ESP8266 WI-FI Control
+Прошивка для платы ESP8266 реализующая управление пинами платы через wi-fi.
 
-When you're done, you can delete the content in this README and update the file with details for others getting started with your repository.
+Представляет собой telnet-подобный сервер интерпетирующий команды пользователя в управляющие команды для esp8266.
 
-*We recommend that you open this README in another tab as you perform the tasks below. You can [watch our video](https://youtu.be/0ocf7u76WSo) for a full demo of all the steps in this tutorial. Open the video in a new tab to avoid leaving Bitbucket.*
+Соединение с ESP8266.
+1. На смартфон устанавливается программа-telnet клиент.
+2. Смартфон необходимо подключить к WI-FI esp8266 (по умолчанию имя сети "ZAZ", пароль "123456789")
+3. Ксли подключение прошло успешно, можно передавать команды.
 
----
+Команды пользователя:
 
-## Edit a file
+level [param] [pin]/[pin]/[pin]... - устанавливает уровень сигнала на ногу. param пинимает два значения -l, -h (0, 1 соответственно)
+пример: level -h 15 (на 15-й ноге появиться 3,3 вольта, красный светодиод загорится)
 
-You’ll start by editing this README file to learn how to edit a file in Bitbucket.
+mode [param] [pin]/[pin]/[pin]...  - устанавливает режим ногги. -i - вход, -o - выход. Если нога установлена на вход, то команда level не действует
+пример: mode -o 12/13/15 -i 14 (режим 12,13,15-й ног будет выход, 14-я нога на вход)
 
-1. Click **Source** on the left side.
-2. Click the README.md link from the list of files.
-3. Click the **Edit** button.
-4. Delete the following text: *Delete this line to make a change to the README from Bitbucket.*
-5. After making your change, click **Commit** and then **Commit** again in the dialog. The commit page will open and you’ll see the change you just made.
-6. Go back to the **Source** page.
+pwm [param] [pin]/[pin]/[pin]... - включает программный ШИМ на указанные ноги. param - уровень ШИМ от 0-1023 (НЕ РЕАЛИЗОВАНО)
+пример: pwm -500 12
 
----
+adc [pin]/[pin]/[pin]... - читает аналоговый сигнал с указанного пина. На текущий момент аналоговый пин только один (адрес 0). НЕ РЕАЛИЗОВАНО.
 
-## Create a file
+show [pin]/[pin]/[pin]... - возвращает информацию по ногам (вход/выход/уровень сигнала)
 
-Next, you’ll add a new file to this repository.
+Команды можно комбинировать. Пример: mode -o 12/13/15 -i 14 level -h 13 -l 12/15
 
-1. Click the **New file** button at the top of the **Source** page.
-2. Give the file a filename of **contributors.txt**.
-3. Enter your name in the empty file space.
-4. Click **Commit** and then **Commit** again in the dialog.
-5. Go back to the **Source** page.
-
-Before you move on, go ahead and explore the repository. You've already seen the **Source** page, but check out the **Commits**, **Branches**, and **Settings** pages.
-
----
-
-## Clone a repository
-
-Use these steps to clone from SourceTree, our client for using the repository command-line free. Cloning allows you to work on your files locally. If you don't yet have SourceTree, [download and install first](https://www.sourcetreeapp.com/). If you prefer to clone from the command line, see [Clone a repository](https://confluence.atlassian.com/x/4whODQ).
-
-1. You’ll see the clone button under the **Source** heading. Click that button.
-2. Now click **Check out in SourceTree**. You may need to create a SourceTree account or log in.
-3. When you see the **Clone New** dialog in SourceTree, update the destination path and name if you’d like to and then click **Clone**.
-4. Open the directory you just created to see your repository’s files.
-
-Now that you're more familiar with your Bitbucket repository, go ahead and add a new file locally. You can [push your change back to Bitbucket with SourceTree](https://confluence.atlassian.com/x/iqyBMg), or you can [add, commit,](https://confluence.atlassian.com/x/8QhODQ) and [push from the command line](https://confluence.atlassian.com/x/NQ0zDQ).
+Результат каждой команды траснлируется всем подключенным клиентам. Успешная отработка команды - эхо. Ошибка - слово error перед эхо.
+Пример команды:
+mode -o 12/15 -i 13 level -h 13/12 -l 15
+ответ от esp8266 (возможный):
+mode -o 12
+mode -o 15
+mode -i 13 
+error "level -h 13" (ошибка потому, что режим ноги 13 установлен на "вход" и ему невозможно задать выходной уровень) 
+level -h 12
+level -l 15
