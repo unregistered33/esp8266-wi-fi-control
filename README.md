@@ -35,5 +35,4 @@ mode -o 15
 mode -i 13 
 error "level -h 13" (ошибка потому, что режим ноги 13 установлен на "вход" и ему невозможно задать выходной уровень) 
 level -h 12
-Add a comment to this line
 level -l 15
