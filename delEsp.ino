@@ -3,7 +3,7 @@
 #include "Provider.h"
 #include <map>
 #include <functional>  
-#include <utility>     // for std::forward and std::move
+#include <utility> 
 #include <vector>
 #include <list>
 #include <ESP8266WiFi.h>
