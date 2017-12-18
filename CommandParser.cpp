@@ -61,7 +61,7 @@ void CommandParser::parse2(String str, int i)
 		//i = 0;
 		
 	}
-	else if (findCmd(params, MAX_ARGS, command))//найден параметр
+	else if (command.indexOf("-") != -1)/*(findCmd(params, MAX_ARGS, command))*///найден параметр
 	{
 		if (isCmdDetected)// если есть найденая команда
 		{
@@ -69,7 +69,7 @@ void CommandParser::parse2(String str, int i)
 			{
 				strParam = command;
 				isParamDetected = true;
-			}	
+			}
 			else// если параметр уже был найден, то он относиться к найденной команде
 			{
 				strCmd += command;
@@ -80,7 +80,7 @@ void CommandParser::parse2(String str, int i)
 		{
 			isParamDetected = false;
 		}
-			
+
 		i = 1;
 	}
 	else if (String(command.c_str()) != "")//если что-то найдено, но не команда и не параметр, предполагаем что это аргументосы
@@ -93,6 +93,7 @@ void CommandParser::parse2(String str, int i)
 			isArgDetected = false;
 
 			String COMMAND = strCmd + " " + strParam + " " + strArgs;
+
 			//если раскомментить то появляется знак $
 			//Serial.println(COMMAND);
 
@@ -107,13 +108,18 @@ void CommandParser::parse2(String str, int i)
 					{
 						ind = strArgs.length();
 					}
-					
+
 					pin = strArgs.substring(0, ind);
 					strArgs.remove(0, ind + 1);
-					
+
 					MODE m;
 					m.pin = pin.toInt();
-					m.mode = (strParam == "-o" ? OUTPUT : INPUT);
+					if (strParam == "-o")
+						m.mode = OUTPUT;
+					else if (strParam == "-i")
+						m.mode = INPUT;
+					else
+						m.mode = -1;//unknown
 					parsedCmd.push_back(new MODE(m));
 				}
 			}
@@ -126,14 +132,40 @@ void CommandParser::parse2(String str, int i)
 					{
 						ind = strArgs.length();
 					}
-					
+
 					pin = strArgs.substring(0, ind);
 					strArgs.remove(0, ind + 1);
-					
+
 					LEVEL l;
 					l.pin = pin.toInt();
-					l.level = (strParam == "-h" ? HIGH : LOW);
-					parsedCmd.push_back(new LEVEL(l));	
+					if (strParam == "-h")
+						l.level = HIGH;
+					else if (strParam == "-l")
+						l.level = LOW;
+					else
+						l.level = -1;//unknown
+
+					parsedCmd.push_back(new LEVEL(l));
+				}
+			}
+			else if (strCmd == "pwm")
+			{
+				while (strArgs.length() > 0)
+				{
+					int ind = strArgs.indexOf("/");
+					if (ind == -1)
+					{
+						ind = strArgs.length();
+					}
+
+					pin = strArgs.substring(0, ind);
+					strArgs.remove(0, ind + 1);
+
+					PWM pwm;
+					pwm.pin = pin.toInt();
+					strParam = strParam.substring(1, strParam.length());
+					pwm.val = strParam.toInt();
+					parsedCmd.push_back(new PWM(pwm));
 				}
 			}
 		}

@@ -14,7 +14,7 @@
 
 //using namespace std;
 
-#define MAX_COMMANDS 4
+#define MAX_COMMANDS 5
 #define MAX_ARGS 13
 
 
@@ -73,7 +73,7 @@ struct LEVEL :public Base
 
 struct PWM :public Base
 {
-	int level;
+	int val;
 	int pin;
 	String getCommandName() override
 	{
@@ -82,7 +82,7 @@ struct PWM :public Base
 	PWM() = default;
 	PWM(const PWM &pwm)
 	{
-		this->level = pwm.level;
+		this->val = pwm.val;
 		this->pin = pwm.pin;
 	}
 

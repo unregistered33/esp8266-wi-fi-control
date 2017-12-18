@@ -50,7 +50,6 @@ private:
 	PIN_ADC* findPinADC(int addr);
 
 	ESP8266Bridge<String, int, int> esp;
-	ESP8266Bridge<String, int...> esp;
 
 public:
 	Provider() = default;

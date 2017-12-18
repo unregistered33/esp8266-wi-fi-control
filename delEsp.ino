@@ -59,6 +59,12 @@ void processCommand(String command)
 			LEVEL * l = static_cast<LEVEL*>(b);
 			provider.RiseThisSHIT(c, l->pin, l->level);
 		}
+
+		if (c == "pwm")
+		{
+			PWM * pwm = static_cast<PWM*>(b);
+			provider.RiseThisSHIT(c, pwm->pin, pwm->val);
+		}
 	}
 	parser.clearClientCommands();
 }
@@ -134,5 +140,14 @@ void loop()
 			}
 		}
 	}
+	//Serial debug
+	if (Serial.available() > 0)
+	{
+		String debugStr = Serial.readString();
+		if (debugStr != "")
+			processCommand(debugStr);
+		debugStr = "";
+	}
+
 }
 

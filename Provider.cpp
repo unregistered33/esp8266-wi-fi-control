@@ -1,4 +1,3 @@
-
 #include "Provider.h"
 
 
@@ -180,49 +179,36 @@ void Provider::OnMode(int _addr, int _mode)
 		pinMode(_addr, _mode);
 	else if (res == 1)
 	{
-		Serial.print("No such MODE: ");
-		Serial.print(_mode);
-		Serial.print(". Ex(");
-		Serial.print(res);
-		Serial.println(")");
+		Serial.print("E1: unknown parameter: ");
+		Serial.println(_mode);
 	}
 	else
 	{
-		Serial.print("Pin: ");
-		Serial.print(_addr);
-		Serial.print(" not found");
+		Serial.print("E2: pin not found: ");
+		Serial.println(_addr);
 	}
 }
 
 void Provider::OnLevel(int _addr, int _level)// 1 - syntax error _level, 2 - pin not found, 3 - mode must be OUTPUT, 0 - OK
 {
 	int res = setPinLevel(_addr, _level);
-	
+
 	if (res == 0)
 		digitalWrite(_addr, _level);
 	else if (res == 1)
 	{
-		Serial.print("No such LEVEL: ");
-		Serial.print(_level);
-		Serial.print(". Ex(");
-		Serial.print(res);
-		Serial.println(")");
+		Serial.print("E1: unknown parameter: ");
+		Serial.println(_level);
 	}
 	else if (res == 2)
 	{
-		Serial.print("Pin: ");
-		Serial.print(_addr);
-		Serial.print(" not found. Ex(");
-		Serial.print(res);
-		Serial.println(")");
+		Serial.print("E2: pin not found: ");
+		Serial.println(_addr);
 	}
 	else if (res == 3)
 	{
-		Serial.print("Error pin(");
+		Serial.print("E3: MODE must be OUTPUT:");
 		Serial.print(_addr);
-		Serial.print("). MODE must be OUTPUT. Ex(");
-		Serial.print(res);
-		Serial.println(")");
 	}
 }
 
@@ -234,31 +220,23 @@ void Provider::OnShow(int _prop, int pin_addr)
 void Provider::OnPWM(int _addr, int _level)// 1 - wrong level, 2 - mode must be OUTPUT, 3 - pin not found, 0 - OK
 {
 	int res = setPinPWM(_addr, _level);
+
 	if (res == 0)
 		analogWrite(_addr, _level);
 	else if (res == 1)
 	{
-		Serial.print("LEVEL out of range (0-1023): ");
-		Serial.print(_level);
-		Serial.print(". Ex(");
-		Serial.print(res);
-		Serial.println(")");
+		Serial.print("E1: out of range (0-1023): ");
+		Serial.println(_level);
 	}
 	else if (res == 2)
 	{
-		Serial.print("Pin: ");
-		Serial.print(_addr);
-		Serial.print(" not found. Ex(");
-		Serial.print(res);
-		Serial.println(")");
+		Serial.print("E2: pin not found: ");
+		Serial.println(_addr);
 	}
 	else if (res == 3)
 	{
-		Serial.print("Error pin(");
+		Serial.print("E3: MODE must be OUTPUT:");
 		Serial.print(_addr);
-		Serial.print("). MODE must be OUTPUT. Ex(");
-		Serial.print(res);
-		Serial.println(")");
 	}
 }
 

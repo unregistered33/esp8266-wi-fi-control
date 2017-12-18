@@ -27,7 +27,7 @@ class CommandParser
 private:
 	String sCmd;
 	
-	String commands[MAX_COMMANDS] = { "mode", "level", "reset", "show" };
+	String commands[MAX_COMMANDS] = { "mode", "level", "reset", "show", "pwm" };
 	String params[MAX_ARGS] = { "-o", "-i", "-l", "-h", "-p", "-low", "-high", "-out", "-in", "-adc1", "-adc2", "-adc3", "-adc4" };
 	String modeParams[2] = { "-o", "-i" };
 	String levelParams[2] = { "-l", "-h" };
