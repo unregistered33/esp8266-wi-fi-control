@@ -69,6 +69,22 @@ void processCommand(String command)
 	parser.clearClientCommands();
 }
 
+void addClient(WiFiClient client)
+{
+	for (int i = 0; i < MAX_SRV_CLIENTS; i++)
+	{
+		if (!serverClients[i] || !serverClients[i].connected())
+		{
+			serverClients[i] = client;
+			Serial.println("Client added");
+			return;
+		}
+	}
+	//послать нахуй и отключить;
+	//client.write...
+	//client.stop();
+}
+
 void setup()
 {
 	
@@ -94,50 +110,40 @@ void setup()
 
 void loop()
 {
-	uint8_t i;
-
-	if (server.hasClient()) {
-		for (i = 0; i < MAX_SRV_CLIENTS; i++) {
-			if (!serverClients[i] || !serverClients[i].connected()) {
-				if (serverClients[i]) serverClients[i].stop();
-				serverClients[i] = server.available();
-				continue;
-			}
-		}
-		WiFiClient serverClient = server.available();
-		serverClient.stop();
+	WiFiClient client = server.available();
+	if (client) {
+		Serial.println("Client connected");
+		if (client.connected())
+			addClient(client);
 	}
 
-	for (i = 0; i < MAX_SRV_CLIENTS; i++) {
-		if (serverClients[i] && serverClients[i].connected()) {
-			int len = serverClients[i].available();
-			String clientCommand;
-			if (serverClients[i].available()) 
-			{
-				while (len != 0)
-				{
-					int len = serverClients[i].available();
-					if (len > 1460)
-						len = 1460;
-					uint8_t sbuf[len];
-					serverClients[i].readBytes(sbuf, len);
+	for (int i = 0; i < MAX_SRV_CLIENTS; i++) {
+		if (serverClients[i] && serverClients[i].connected())
+		{
+			String clientCommand = "";
 
-					for (int j = 0; j < MAX_SRV_CLIENTS; j++) 
-					{
-						if (serverClients[j] && serverClients[j].connected()) 
-						{
-							serverClients[j].write(sbuf, len);
-							//delay(1);
-						}
-					}
-					clientCommand = (char*)sbuf;
-					if (clientCommand != "") 
-					{
-						processCommand(clientCommand);
-						clientCommand = "";
-					}
-				}
+			int c = -1;
+			int bytes_read = 0;
+			c = serverClients[i].read();
+			while (c != -1)
+			{
+				bytes_read++;
+				clientCommand += char(c);
+
+				c = serverClients[i].read();
 			}
+
+			if (bytes_read > 0)
+			{
+				Serial.println(clientCommand);
+				for (int j = 0; j < MAX_SRV_CLIENTS; j++)
+					if (serverClients[j] && serverClients[j].connected())
+						serverClients[j].write(clientCommand.c_str(), bytes_read);
+
+				processCommand(clientCommand);
+				clientCommand = "";
+			}
+			serverClients[i].flush();
 		}
 	}
 	//Serial debug
