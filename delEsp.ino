@@ -87,7 +87,6 @@ void addClient(WiFiClient client)
 
 void setup()
 {
-	
 	Serial.begin(115200);
 	
 	delay(500);
@@ -105,7 +104,6 @@ void setup()
 
 	server.begin();
 	server.setNoDelay(true);
-
 }
 
 void loop()
