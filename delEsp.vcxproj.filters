@@ -36,6 +36,9 @@
     <ClInclude Include="__vm\.esp8266-wi-fi-control.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="__vm\.esp8266.vsarduino.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandParser.cpp">

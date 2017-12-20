@@ -137,7 +137,6 @@ void loop()
 				for (int j = 0; j < MAX_SRV_CLIENTS; j++)
 					if (serverClients[j] && serverClients[j].connected())
 						serverClients[j].write(clientCommand.c_str(), bytes_read);
-
 				processCommand(clientCommand);
 				clientCommand = "";
 			}
